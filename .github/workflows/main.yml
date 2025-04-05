@@ -21,8 +21,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install locust flask
+          pip install flask locust
 
       - name: Start Flask server
         run: |
@@ -30,4 +29,17 @@ jobs:
           echo "Waiting for Flask server to start"
           sleep 30
 
+      - name: Run Locust load test (10K users, ramp-up 100/s, 2 mins)
+        run: |
+          locust -f locustfile.py --headless --host=http://localhost:5000 \
+            --users 10000 --spawn-rate 100 --run-time 2m \
+            --csv=locust_stats
 
+      - name: Archive Locust results
+        uses: actions/upload-artifact@v3
+        with:
+          name: locust-results
+          path: |
+            locust_stats_stats.csv
+            locust_stats_failures.csv
+            locust_stats_distribution.csv
