@@ -36,7 +36,7 @@ jobs:
             --csv=locust_stats
 
       - name: Archive Locust results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3.1.3
         with:
           name: locust-results
           path: |
