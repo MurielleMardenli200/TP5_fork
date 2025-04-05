@@ -32,5 +32,11 @@ def echo():
     message = data.get("message", "No message sent")
     return jsonify({"echo": message})
 
+# Simulates a slow process
+@app.route('/slow')
+def slow():
+    time.sleep(4) 
+    return jsonify({"message": "Super slow!"})
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

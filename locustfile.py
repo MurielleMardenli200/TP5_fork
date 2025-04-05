@@ -26,7 +26,16 @@ class SimpleTasks(TaskSet):
         # Test the echo route
         payload = {"message": "Hello, Locust!"}
         self.client.post("/echo", json=payload)
+        
+class HeavyUser(HttpUser):
+    wait_time = between(3.0, 5.0)  
+    weight = 1
+
+    @task
+    def slow_endpoint(self):
+        self.client.get("/slow")
 
 class SimpleUser(HttpUser):
     tasks = [SimpleTasks]
     wait_time = between(1, 5)  # Simulate a wait time between requests
+    weight = 1
