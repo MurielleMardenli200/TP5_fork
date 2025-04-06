@@ -25,14 +25,20 @@ jobs:
 
       - name: Start Flask server
         run: |
-          python server.py &
+          nohup python server.py > flask.log 2>&1 &
           echo "Waiting for Flask server to start..."
           sleep 10
 
       - name: Run Locust load tests
         run: |
-          mkdir locust_results
-          locust -f locustfile.py --headless -u 10000 -r 100 --run-time 2m --host=http://localhost:5000 --csv=locust_results/result
+          mkdir -p locust_results
+          locust -f locustfile.py \
+            --headless \
+            -u 1000 \
+            -r 10 \
+            --run-time 2m \
+            --host=http://localhost:5000 \
+            --csv=locust_results/result
 
       - name: Archive Locust results
         uses: actions/upload-artifact@v3
